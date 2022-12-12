@@ -18,9 +18,9 @@ def kill_proc_tree(pid):
 
 
 class PythonWindowsService(win32serviceutil.ServiceFramework):
-    _svc_name_ = "FastAPI Uvicorn Server Service"  # service name
-    _svc_display_name_ = "FastAPI Uvicorn Server Service"  # service display name
-    _svc_description_ = "This service starts up the uvicorn server."  # service description
+    _svc_name_ = "ClamAV Web API Server Service"  # service name
+    _svc_display_name_ = "ClamAV Wb API Service"  # service display name
+    _svc_description_ = "This service starts up the ClamAV web API server."  # service description
 
     def __init__(self, args):
         win32serviceutil.ServiceFramework.__init__(self, args)
