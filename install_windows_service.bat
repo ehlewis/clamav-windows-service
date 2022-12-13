@@ -1,2 +1,2 @@
-call dist\windows_service.exe --startup auto install
-call dist\windows_service.exe start
+call dist\clamav_webapi_windows_service.exe --startup auto install
+call dist\clamav_webapi_windows_service.exe start
