@@ -3,14 +3,16 @@ This repository is for creating a FastAPI/Uvicorn windows service.
 Note: You need Miniconda3 or Anaconda3 installed on your system.
 
 ---
+## Steps for building the service
+1. From the root repo directory run create_windows_service_installer.bat
+
+
 ## Steps for installing the service
-1. Clone this repo
-2. From the root repo directory run create_windows_service_installer.bat
-3. Move the dist/windows_service folder to install location. Note: Don't move the folder after this otherwise the service won't work.
-4. Move dist/clamdapiserver.exe to C:\Program Files\ClamAV
-5. Open elevated command prompt (i.e. as Admin)
-6. cd to repo root directory
-7. Type install_windows_service.bat and press enter
+1. Move dist/clamdapiserver.exe and dist/clamav_webapi_windows_service to C:\Program Files\ClamAV
+2. Open elevated command prompt (i.e. as Admin)
+3. cd to C:\Program Files\ClamAV
+4. `call clamav_webapi_windows_service.exe --startup auto install`
+5. `call clamav_webapi_windows_service.exe start`
 
 The service will be installed on your system in auto run mode.
 
@@ -44,5 +46,7 @@ You will be able to see logging values in the command prompt.
 
 
 ## Uninstallation/Environment Reset
+
 delete /build and /dist
+
 sc.exe delete "ClamAV Web API Server Service"
