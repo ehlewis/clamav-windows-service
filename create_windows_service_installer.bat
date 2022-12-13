@@ -6,5 +6,5 @@ echo Build server executable folder
 call conda activate windows-service
 call pyinstaller clamdapiserver.spec --noconfirm
 echo Build windows_server executable folder
-call pyinstaller windows_service.spec --noconfirm
+call pyinstaller --onefile --hidden-import win32timezone windows_service.py
 echo Successfully built the windows service install folder
