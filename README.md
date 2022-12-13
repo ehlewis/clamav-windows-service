@@ -7,9 +7,10 @@ Note: You need Miniconda3 or Anaconda3 installed on your system.
 1. Clone this repo
 2. From the root repo directory run create_windows_service_installer.bat
 3. Move the dist/windows_service folder to install location. Note: Don't move the folder after this otherwise the service won't work.
-4. Open elevated command prompt (i.e. as Admin)
-5. cd to repo root directory
-6. Type install_windows_service.bat and press enter
+4. Move dist/clamdapiserver.exe to C:\Program Files\ClamAV
+5. Open elevated command prompt (i.e. as Admin)
+6. cd to repo root directory
+7. Type install_windows_service.bat and press enter
 
 The service will be installed on your system in auto run mode.
 
@@ -40,3 +41,8 @@ If for some reason you want to debug the server follow these steps:
 2. Run dist/windows_service/server/server.exe
 
 You will be able to see logging values in the command prompt.
+
+
+## Uninstallation/Environment Reset
+delete /build and /dist
+sc.exe delete "ClamAV Web API Server Service"

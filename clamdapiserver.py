@@ -1,5 +1,7 @@
 import uvicorn
 from multiprocessing import cpu_count, freeze_support
+import clamd
+import os
 
 
 def start_server(host="127.0.0.1",
