@@ -8,7 +8,16 @@ import win32event
 import win32service
 import win32serviceutil
 import socket
+import logging
+import logging.handlers
+from datetime import datetime
 
+log_file_path='C:/Program Files/ClamAV/clamav_api_windows_service.log'
+logger = logging.getLogger("ServerLogger")
+logger.setLevel(logging.INFO)
+handler = logging.handlers.RotatingFileHandler(log_file_path)
+logger.addHandler(handler)
+logtime = datetime.now().strftime("%m/%d/%Y %H:%M:%S:")
 
 def kill_proc_tree(pid):
     parent = psutil.Process(pid)
@@ -35,16 +44,26 @@ class PythonWindowsService(win32serviceutil.ServiceFramework):
         self.ReportServiceStatus(win32service.SERVICE_STOPPED)
 
     def SvcDoRun(self):
-        self.process = Popen('call "C:/Program Files/ClamAV/clamdapiserver.exe"', shell=True)
-        self.ReportServiceStatus(win32service.SERVICE_RUNNING)
-        rc = win32event.WaitForSingleObject(self.hWaitStop, win32event.INFINITE)
+        try:
+            logger.info(logtime + " Starting Popen 'call C:/Program Files/ClamAV/clamdapiserver.exe'")
+            self.process = Popen('call "C:/Program Files/ClamAV/clamdapiserver.exe"', shell=True)
+            self.ReportServiceStatus(win32service.SERVICE_RUNNING)
+            rc = win32event.WaitForSingleObject(self.hWaitStop, win32event.INFINITE)
+            logger.info(logtime + " Server Popen'ed")
+        except Exception as e:
+            logger.exception(logtime + " Unable to Popen")
+
 
 
 if __name__ == '__main__':
     freeze_support()  # Needed for pyinstaller for multiprocessing on WindowsOS
     if len(sys.argv) == 1:
+        logger.info(logtime + " Starting Service option 1")
         servicemanager.Initialize()
         servicemanager.PrepareToHostSingle(PythonWindowsService)
         servicemanager.StartServiceCtrlDispatcher()
+        logger.info(logtime + " Service option 1 Started")
     else:
+        logger.info(logtime + " Starting Service option 2")
         win32serviceutil.HandleCommandLine(PythonWindowsService)
+        logger.info(logtime + " Service option 2 Started")

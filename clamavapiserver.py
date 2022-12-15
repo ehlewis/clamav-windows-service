@@ -2,13 +2,19 @@ import uvicorn
 from multiprocessing import cpu_count, freeze_support
 import clamd
 import os
+import logging
+import logging.handlers
 
+log_file_path='C:/Program Files/ClamAV/clamavapiserver.log'
+logger = logging.getLogger("ServerLogger")
+logger.setLevel(logging.INFO)
+handler = logging.handlers.RotatingFileHandler(log_file_path)
+logger.addHandler(handler)
 
-def start_server(host="127.0.0.1",
-                 port=5000,
-                 num_workers=4,
-                 loop="asyncio",
-                 reload=False):
+logging.info('clamavapiserver.py opened')
+
+def start_server(host="127.0.0.1", port=5000, num_workers=4, loop="asyncio", reload=False):
+
     uvicorn.run("clamapi:app",
                 host=host,
                 port=port,
@@ -18,6 +24,9 @@ def start_server(host="127.0.0.1",
 
 
 if __name__ == "__main__":
+    logger.info("Freezing support")
     freeze_support()  # Needed for pyinstaller for multiprocessing on WindowsOS
+    logger.info("Support frozen")
     num_workers = int(cpu_count() * 0.75)
+    logger.info("Starting server with " + str(num_workers) + " workers")
     start_server(num_workers=num_workers)

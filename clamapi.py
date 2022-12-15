@@ -4,13 +4,29 @@ from fastapi import FastAPI,File, UploadFile
 import random
 import string
 import time
+import logging
+import logging.handlers
+from datetime import datetime
 
+log_file_path='C:/Program Files/ClamAV/clamapi.log'
+logger = logging.getLogger("ServerLogger")
+logger.setLevel(logging.INFO)
+handler = logging.handlers.RotatingFileHandler(log_file_path)
+logger.addHandler(handler)
+logtime = datetime.now().strftime("%m/%d/%Y %H:%M:%S:")
 
+logger.info(logtime + " Attempting to start server")
 app = FastAPI()
+logger.info(logtime + " Server started")
 
-clamav = clamd.ClamdNetworkSocket()
-print(clamav.ping())
-print(clamav.version())
+try:
+    logger.info(logtime + " Connecting to CLAMD deamon")
+    clamav = clamd.ClamdNetworkSocket()
+    print(clamav.ping())
+    print(clamav.version())
+    logger.info(logtime + " Connected to CLAMD deamon")
+except Exception as e:
+    logger.exception(logtime + " Unable to connect to CLAMD")
 
 @app.get("/healthcheck")
 def healthcheck(ping=None):
@@ -29,10 +45,12 @@ def clamav_version():
 
 @app.post("/scan-file")
 def scan_file(file: UploadFile = File(...)):
+    logger.info(logtime + " File received for scan...")
     t0= time.time()
     temp_filename = ''.join(random.choices(string.ascii_uppercase + string.ascii_lowercase + string.digits , k=15))
     save_file = r"C:\\temp\\" + temp_filename
     print(file.filename + " : " + temp_filename)
+    logger.info("Accepted file to scan: " + file.filename + " : " + temp_filename)
     try:
         contents = file.file.read()
 
@@ -41,8 +59,10 @@ def scan_file(file: UploadFile = File(...)):
             f.write(contents)
         print("File: " + file.filename + " aka " + save_file + " written.")
     except Exception as e:
+        logger.exception(logtime + " Unable to write file to disk")
         print(e)
         return {"message": e }
+        
     finally:
         file.file.close()
         
@@ -52,6 +72,7 @@ def scan_file(file: UploadFile = File(...)):
         print("File: " + file.filename + " aka " + save_file + " scanned.")
         print(scan_results)
     except Exception as e:
+        logger.exception(logtime + " Unable to scan file with CLAMD")
         print(e)
         return {"message": "There was an error scanning the file " + e }
     finally:
@@ -59,6 +80,8 @@ def scan_file(file: UploadFile = File(...)):
         print("File: " + save_file + " removed")
     t1=time.time()
     print(t1-t0)
+    logger.info(logtime + " Returned scan status in " + str(t1-t0) + " seconds")
+    logger.info(scan_results)
     return {"result": clean_result}
 
 '''
