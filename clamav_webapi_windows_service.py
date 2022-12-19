@@ -45,8 +45,8 @@ class PythonWindowsService(win32serviceutil.ServiceFramework):
 
     def SvcDoRun(self):
         try:
-            logger.info(logtime + " Starting Popen 'call C:/Program Files/ClamAV/clamdapiserver.exe'")
-            self.process = Popen('call "C:/Program Files/ClamAV/clamdapiserver.exe"', shell=True)
+            logger.info(logtime + " Starting Popen 'call C:/Program Files/ClamAV/clamavapiserver.exe'")
+            self.process = Popen('call "C:/Program Files/ClamAV/clamavapiserver.exe"', shell=True)
             self.ReportServiceStatus(win32service.SERVICE_RUNNING)
             rc = win32event.WaitForSingleObject(self.hWaitStop, win32event.INFINITE)
             logger.info(logtime + " Server Popen'ed")

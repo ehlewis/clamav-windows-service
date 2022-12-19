@@ -14,7 +14,7 @@ logger.addHandler(handler)
 logging.info('clamavapiserver.py opened')
 
 def start_server(host="127.0.0.1", port=5000, num_workers=4, loop="asyncio", reload=False):
-
+    logger.info("Starting server with " + str(num_workers) + " workers on " + host + ":" + str(port))
     uvicorn.run("clamapi:app",
                 host=host,
                 port=port,
@@ -28,5 +28,5 @@ if __name__ == "__main__":
     freeze_support()  # Needed for pyinstaller for multiprocessing on WindowsOS
     logger.info("Support frozen")
     num_workers = int(cpu_count() * 0.75)
-    logger.info("Starting server with " + str(num_workers) + " workers")
+    
     start_server(num_workers=num_workers)
