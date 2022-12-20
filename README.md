@@ -40,9 +40,16 @@ The available CLI options for the windows service executable are shown below.
 
 If for some reason you want to debug the server follow these steps:
 1. Stop the FastAPI windows service
-2. Run dist/windows_service/server/server.exe
+2. Run dist/clamavapiserver.exe
 
 You will be able to see logging values in the command prompt.
+
+Logs are available at C:\Program Files\ClamAV in the following files
+clamapi.log
+clamav_api_windows_service.log
+clamavapiserver.log
+
+These files correspond with their .py equivalents
 
 
 ## Uninstallation/Environment Reset
@@ -50,3 +57,36 @@ You will be able to see logging values in the command prompt.
 delete /build and /dist
 
 sc.exe delete "ClamAV Web API Server Service"
+
+
+
+## API Documentation
+
+### Request
+
+Post to the server IP address on port 5000
+Open the file (example in this case is going to be loaded into a variable named file_1)
+and form the post body as the following
+{'file': file_1}
+
+The POST body would end up containing the file in the follwoing format:
+
+...,
+files": {
+    "file": "<censored...binary...data>"
+},
+...
+
+### Response
+
+`{'result': {'OK': None}}`
+This scan result shows that the supplied file was clean from any known threats
+
+`{'result': {'FOUND': 'Win.Test.EICAR_HDB-1'}}`
+This scan result shows that a known threat was found. The type of threeat can be ignored. the 'FOUND' parameter is what should be looked at.
+Files which return this result should be immediately rejected and discarded
+
+
+`{'result': {'ERROR': "Can't open file or directory"}}`
+The above response is the result of another virus protection program quarantining the file that was saved for scanning
+

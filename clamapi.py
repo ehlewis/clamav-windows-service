@@ -61,7 +61,7 @@ def scan_file(file: UploadFile = File(...)):
     except Exception as e:
         logger.exception(logtime + " Unable to write file to disk")
         print(e)
-        return {"message": e }
+        return {"message": "Unable to write file to disk" }
         
     finally:
         file.file.close()
@@ -74,7 +74,7 @@ def scan_file(file: UploadFile = File(...)):
     except Exception as e:
         logger.exception(logtime + " Unable to scan file with CLAMD")
         print(e)
-        return {"message": "There was an error scanning the file " + e }
+        return {"message": "Unable to scan file with CLAMD" }
     finally:
         os.remove(save_file)
         print("File: " + save_file + " removed")
