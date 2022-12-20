@@ -13,7 +13,7 @@ logger.addHandler(handler)
 
 logging.info('clamavapiserver.py opened')
 
-def start_server(host="127.0.0.1", port=5000, num_workers=4, loop="asyncio", reload=False):
+def start_server(host="0.0.0.0", port=5000, num_workers=4, loop="asyncio", reload=False):
     logger.info("Starting server with " + str(num_workers) + " workers on " + host + ":" + str(port))
     uvicorn.run("clamapi:app",
                 host=host,
