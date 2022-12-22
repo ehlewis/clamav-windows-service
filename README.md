@@ -62,7 +62,9 @@ sc.exe delete "ClamAV Web API Server Service"
 
 ## API Documentation
 
-### Request
+### /scan-file
+
+#### Request
 
 Post to the server IP address on port 5000
 Open the file (example in this case is going to be loaded into a variable named file_1)
@@ -77,16 +79,26 @@ files": {
 },
 ...
 
-### Response
+#### Response
 
 `{'result': {'OK': None}}`
 This scan result shows that the supplied file was clean from any known threats
 
 `{'result': {'FOUND': 'Win.Test.EICAR_HDB-1'}}`
-This scan result shows that a known threat was found. The type of threeat can be ignored. the 'FOUND' parameter is what should be looked at.
+This scan result shows that a known threat was found. The type of threat can be ignored. the 'FOUND' parameter is what should be looked at.
 Files which return this result should be immediately rejected and discarded
 
 
 `{'result': {'ERROR': "Can't open file or directory"}}`
 The above response is the result of another virus protection program quarantining the file that was saved for scanning
 
+
+### /healthcheck
+
+#### Request
+
+GET /healthcheck
+
+#### Response
+
+{"healthy"} if its alive, nothing otherwise
