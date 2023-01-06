@@ -5,28 +5,28 @@ import random
 import string
 import time
 import logging
-import logging.handlers
+from logging.handlers import TimedRotatingFileHandler
 from datetime import datetime
 
-log_file_path='C:/Program Files/ClamAV/clamapi.log'
+log_file_path='C:/Program Files/ClamAV/clamapi_' + datetime.now().strftime("%m-%d-%Y") + '.log'
 logger = logging.getLogger("ServerLogger")
-logger.setLevel(logging.INFO)
-handler = logging.handlers.RotatingFileHandler(log_file_path)
+logging.basicConfig(format='%(asctime)s %(levelname)-8s %(message)s', level=logging.INFO, datefmt='%Y-%m-%d %H:%M:%S')
+handler = TimedRotatingFileHandler(log_file_path, when="midnight", interval=1)
+handler.suffix = "%Y%m%d"
 logger.addHandler(handler)
-logtime = datetime.now().strftime("%m/%d/%Y %H:%M:%S:")
 
-logger.info(logtime + " Attempting to start server")
+logger.debug("Attempting to start server")
 app = FastAPI()
-logger.info(logtime + " Server started")
+logger.debug("DEBUG: Server started")
 
 try:
-    logger.info(logtime + " Connecting to CLAMD deamon")
+    logger.info("Connecting to CLAMD deamon")
     clamav = clamd.ClamdNetworkSocket()
     print(clamav.ping())
     print(clamav.version())
-    logger.info(logtime + " Connected to CLAMD deamon")
+    logger.info("Connected to CLAMD deamon")
 except Exception as e:
-    logger.exception(logtime + " Unable to connect to CLAMD")
+    logger.exception("ERROR: Unable to connect to CLAMD")
 
 @app.get("/healthcheck")
 def healthcheck(ping=None):
@@ -45,42 +45,46 @@ def clamav_version():
 
 @app.post("/scan-file")
 def scan_file(file: UploadFile = File(...)):
-    logger.info(logtime + " File received for scan...")
-    t0= time.time()
+    logger.debug("File + " + file.filename + " received for scan...")
+    t0 = time.time() # Timing scans for performance purposes in debug
     temp_filename = ''.join(random.choices(string.ascii_uppercase + string.ascii_lowercase + string.digits , k=15))
     save_file = r"C:\\temp\\" + temp_filename
-    print(file.filename + " : " + temp_filename)
     logger.info("Accepted file to scan: " + file.filename + " : " + temp_filename)
+
+    # Read the file and write it to a temporary, randomly named, file on the local disk
     try:
         contents = file.file.read()
 
         os.makedirs(os.path.dirname(save_file), exist_ok=True)
         with open(save_file, 'wb') as f:
             f.write(contents)
-        print("File: " + file.filename + " aka " + save_file + " written.")
+        logger.debug("file: " + file.filename + " aka " + save_file + " to disk")
+
     except Exception as e:
-        logger.exception(logtime + " Unable to write file to disk")
-        print(e)
+        logger.exception(" Unable to write " + save_file + " to disk")
         return {"message": "Unable to write file to disk" }
         
     finally:
         file.file.close()
         
+    # Try to scan the file with the ClamAV Deamon
     try:
         scan_results = clamav.scan(save_file)
         clean_result = scan_results.values()
-        print("File: " + file.filename + " aka " + save_file + " scanned.")
-        print(scan_results)
+        logger.debug("File: " + file.filename + " aka " + save_file + " scanned.")
+
     except Exception as e:
-        logger.exception(logtime + " Unable to scan file with CLAMD")
-        print(e)
+        logger.exception("unable to scan " + save_file + " with CLAMD")
         return {"message": "Unable to scan file with CLAMD" }
+    
     finally:
+        # Remove the file after scanning or failure
         os.remove(save_file)
-        print("File: " + save_file + " removed")
+        logger.debug("File: " + file.filename + " aka " + save_file + " removed")
+
     t1=time.time()
     print(t1-t0)
-    logger.info(logtime + " Returned scan status in " + str(t1-t0) + " seconds")
+    logger.debug("Returned scan status in " + str(t1-t0) + " seconds")
     logger.info(scan_results)
     return {"result": clean_result}
 

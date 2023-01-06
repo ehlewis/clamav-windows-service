@@ -5,7 +5,7 @@ import os
 import logging
 import logging.handlers
 
-log_file_path='C:/Program Files/ClamAV/clamavapiserver.log'
+log_file_path='C:/Program Files/ClamAV/clamavapiserver_' + datetime.now().strftime("%m-%d-%Y") + '_debug.log'
 logger = logging.getLogger("ServerLogger")
 logger.setLevel(logging.INFO)
 handler = logging.handlers.RotatingFileHandler(log_file_path)
@@ -24,9 +24,9 @@ def start_server(host="0.0.0.0", port=5000, num_workers=4, loop="asyncio", reloa
 
 
 if __name__ == "__main__":
-    logger.info("Freezing support")
+    logger.debug("Freezing support")
     freeze_support()  # Needed for pyinstaller for multiprocessing on WindowsOS
-    logger.info("Support frozen")
+    logger.debug("Support frozen")
     num_workers = int(cpu_count() * 0.75)
     
     start_server(num_workers=num_workers)

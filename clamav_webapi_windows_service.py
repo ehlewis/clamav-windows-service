@@ -12,7 +12,7 @@ import logging
 import logging.handlers
 from datetime import datetime
 
-log_file_path='C:/Program Files/ClamAV/clamav_api_windows_service.log'
+log_file_path='C:/Program Files/ClamAV/clamav_api_windows_service_' + datetime.now().strftime("%m-%d-%Y") + '_debug.log'
 logger = logging.getLogger("ServerLogger")
 logger.setLevel(logging.INFO)
 handler = logging.handlers.RotatingFileHandler(log_file_path)
@@ -49,7 +49,7 @@ class PythonWindowsService(win32serviceutil.ServiceFramework):
             self.process = Popen('call "C:/Program Files/ClamAV/clamavapiserver.exe"', shell=True)
             self.ReportServiceStatus(win32service.SERVICE_RUNNING)
             rc = win32event.WaitForSingleObject(self.hWaitStop, win32event.INFINITE)
-            logger.info(logtime + " Server Popen'ed")
+            logger.debug(logtime + " Server Popen'ed")
         except Exception as e:
             logger.exception(logtime + " Unable to Popen")
 
@@ -58,12 +58,12 @@ class PythonWindowsService(win32serviceutil.ServiceFramework):
 if __name__ == '__main__':
     freeze_support()  # Needed for pyinstaller for multiprocessing on WindowsOS
     if len(sys.argv) == 1:
-        logger.info(logtime + " Starting Service option 1")
+        logger.debug(logtime + " Starting Service option 1")
         servicemanager.Initialize()
         servicemanager.PrepareToHostSingle(PythonWindowsService)
         servicemanager.StartServiceCtrlDispatcher()
-        logger.info(logtime + " Service option 1 Started")
+        logger.debug(logtime + " Service option 1 Started")
     else:
-        logger.info(logtime + " Starting Service option 2")
+        logger.debug(logtime + " Starting Service option 2")
         win32serviceutil.HandleCommandLine(PythonWindowsService)
-        logger.info(logtime + " Service option 2 Started")
+        logger.debug(logtime + " Service option 2 Started")
