@@ -10,10 +10,16 @@ from datetime import datetime
 
 log_file_path='C:/Program Files/ClamAV/clamapi_' + datetime.now().strftime("%m-%d-%Y") + '.log'
 logger = logging.getLogger("ServerLogger")
-logging.basicConfig(format='%(asctime)s %(levelname)-8s %(message)s', level=logging.INFO, datefmt='%Y-%m-%d %H:%M:%S')
+logger.setLevel(logging.INFO)
+logging.basicConfig(format='%(asctime)s %(levelname)-8s %(message)s', datefmt='%Y-%m-%d %H:%M:%S')
 handler = TimedRotatingFileHandler(log_file_path, when="midnight", interval=1)
 handler.suffix = "%Y%m%d"
+# create formatter and add it to the handlers
+formatter = logging.Formatter('%(asctime)s %(levelname)-8s %(message)s')
+handler.setFormatter(formatter)
 logger.addHandler(handler)
+
+
 
 logger.debug("Attempting to start server")
 app = FastAPI()

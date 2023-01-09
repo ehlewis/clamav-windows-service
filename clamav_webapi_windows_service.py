@@ -9,15 +9,20 @@ import win32service
 import win32serviceutil
 import socket
 import logging
-import logging.handlers
+from logging.handlers import TimedRotatingFileHandler
 from datetime import datetime
 
 log_file_path='C:/Program Files/ClamAV/clamav_api_windows_service_' + datetime.now().strftime("%m-%d-%Y") + '_debug.log'
 logger = logging.getLogger("ServerLogger")
 logger.setLevel(logging.INFO)
-handler = logging.handlers.RotatingFileHandler(log_file_path)
+logging.basicConfig(format='%(asctime)s %(levelname)-8s %(message)s', datefmt='%Y-%m-%d %H:%M:%S')
+handler = TimedRotatingFileHandler(log_file_path, when="midnight", interval=1)
+handler.suffix = "%Y%m%d"
+# create formatter and add it to the handlers
+formatter = logging.Formatter('%(asctime)s %(levelname)-8s %(message)s')
+handler.setFormatter(formatter)
 logger.addHandler(handler)
-logtime = datetime.now().strftime("%m/%d/%Y %H:%M:%S:")
+
 
 def kill_proc_tree(pid):
     parent = psutil.Process(pid)

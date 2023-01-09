@@ -2,13 +2,19 @@ import uvicorn
 from multiprocessing import cpu_count, freeze_support
 import clamd
 import os
+from datetime import datetime
 import logging
-import logging.handlers
+from logging.handlers import TimedRotatingFileHandler
 
 log_file_path='C:/Program Files/ClamAV/clamavapiserver_' + datetime.now().strftime("%m-%d-%Y") + '_debug.log'
 logger = logging.getLogger("ServerLogger")
 logger.setLevel(logging.INFO)
-handler = logging.handlers.RotatingFileHandler(log_file_path)
+logging.basicConfig(format='%(asctime)s %(levelname)-8s %(message)s', datefmt='%Y-%m-%d %H:%M:%S')
+handler = TimedRotatingFileHandler(log_file_path, when="midnight", interval=1)
+handler.suffix = "%Y%m%d"
+# create formatter and add it to the handlers
+formatter = logging.Formatter('%(asctime)s %(levelname)-8s %(message)s')
+handler.setFormatter(formatter)
 logger.addHandler(handler)
 
 logging.info('clamavapiserver.py opened')
