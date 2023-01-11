@@ -8,7 +8,8 @@ import logging
 from logging.handlers import TimedRotatingFileHandler
 from datetime import datetime
 
-log_file_path='C:/Program Files/ClamAV/clamapi_' + datetime.now().strftime("%m-%d-%Y") + '.log'
+os.makedirs("C:/Program Files/ClamAV/logs/", exist_ok=True)
+log_file_path='C:/Program Files/ClamAV/logs/clamapi_' + datetime.now().strftime("%m-%d-%Y") + '.log'
 logger = logging.getLogger("ServerLogger")
 logger.setLevel(logging.INFO)
 logging.basicConfig(format='%(asctime)s %(levelname)-8s %(message)s', datefmt='%Y-%m-%d %H:%M:%S')

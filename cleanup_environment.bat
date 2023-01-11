@@ -5,5 +5,6 @@ del "C:\Program Files\ClamAV\clamav_api_windows_service*.log"
 del "C:\Program Files\ClamAV\clamavapiserver*.log"
 del "C:\Program Files\ClamAV\clamapi*.log"
 
+rmdir /s "C:\Program Files\ClamAV\logs"
 rmdir /s build
 rmdir /s dist
