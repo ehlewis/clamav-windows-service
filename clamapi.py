@@ -26,14 +26,17 @@ logger.debug("Attempting to start server")
 app = FastAPI()
 logger.debug("DEBUG: Server started")
 
-try:
-    logger.info("Connecting to CLAMD deamon")
-    clamav = clamd.ClamdNetworkSocket()
-    print(clamav.ping())
-    print(clamav.version())
-    logger.info("Connected to CLAMD deamon")
-except Exception as e:
-    logger.exception("ERROR: Unable to connect to CLAMD")
+while True:
+    try:
+        logger.info("Attempting to connect to CLAMD deamon")
+        clamav = clamd.ClamdNetworkSocket()
+        print(clamav.ping())
+        print(clamav.version())
+        logger.info("Connected to CLAMD deamon")
+        break
+    except Exception as e:
+        logger.exception("ERROR: Unable to connect to CLAMD. Retrying in 10 seconds...")
+        time.sleep(10)
 
 @app.get("/healthcheck")
 def healthcheck(ping=None):
