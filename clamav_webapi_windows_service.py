@@ -50,25 +50,25 @@ class PythonWindowsService(win32serviceutil.ServiceFramework):
 
     def SvcDoRun(self):
         try:
-            logger.info(logtime + " Starting Popen 'call C:/Program Files/ClamAV/clamavapiserver.exe'")
+            logger.info("Starting Popen 'call C:/Program Files/ClamAV/clamavapiserver.exe'")
             self.process = Popen('call "C:/Program Files/ClamAV/clamavapiserver.exe"', shell=True)
             self.ReportServiceStatus(win32service.SERVICE_RUNNING)
             rc = win32event.WaitForSingleObject(self.hWaitStop, win32event.INFINITE)
-            logger.debug(logtime + " Server Popen'ed")
+            logger.debug("Server Popen'ed")
         except Exception as e:
-            logger.exception(logtime + " Unable to Popen")
+            logger.exception("Unable to Popen")
 
 
 
 if __name__ == '__main__':
     freeze_support()  # Needed for pyinstaller for multiprocessing on WindowsOS
     if len(sys.argv) == 1:
-        logger.debug(logtime + " Starting Service option 1")
+        logger.debug("Starting Service option 1")
         servicemanager.Initialize()
         servicemanager.PrepareToHostSingle(PythonWindowsService)
         servicemanager.StartServiceCtrlDispatcher()
-        logger.debug(logtime + " Service option 1 Started")
+        logger.debug("Service option 1 Started")
     else:
-        logger.debug(logtime + " Starting Service option 2")
+        logger.debug("Starting Service option 2")
         win32serviceutil.HandleCommandLine(PythonWindowsService)
-        logger.debug(logtime + " Service option 2 Started")
+        logger.debug("Service option 2 Started")
