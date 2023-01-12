@@ -3,13 +3,13 @@
 Miniconda3 or Anaconda3 installed on your system.
 
 ### Installing
-Install the ClamAV files to C:\Program Files\ClamAV
-Inside C:\Program Files\ClamAV\conf_examples edit the conf examples to remove the .example extension and comment or delete the requested line inside the files
-Move the .conf's to C:\Program Files\ClamAV
-Open a command prompt.
-Change directory to C:\Program Files\ClamAV
-Run clamd.exe --install
-Open services.msc and edit the newly installed "ClamWin Free Antivirus Scanner Service" to start Automatically and/or use credentials other than the local system account, etc.
+1. Install the ClamAV files to C:\Program Files\ClamAV
+2. Inside C:\Program Files\ClamAV\conf_examples edit the conf examples to remove the .example extension and comment or delete the requested line inside the files
+3. Move the .conf's to C:\Program Files\ClamAV
+4. Open a command prompt.
+5. Change directory to C:\Program Files\ClamAV
+6. Run clamd.exe --install
+7. Open services.msc and edit the newly installed "ClamWin Free Antivirus Scanner Service" to start Automatically and/or use credentials other than the local system account, etc.
 
 ---
 ## Steps for building the service
