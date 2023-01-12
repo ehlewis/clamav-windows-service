@@ -1,18 +1,27 @@
-This repository is for creating a FastAPI/Uvicorn windows service.
+## Prerequisites:
+### Building:
+Miniconda3 or Anaconda3 installed on your system.
 
-Note: You need Miniconda3 or Anaconda3 installed on your system.
+### Installing
+Install the ClamAV files to C:\Program Files\ClamAV
+Inside C:\Program Files\ClamAV\conf_examples edit the conf examples to remove the .example extension and comment or delete the requested line inside the files
+Move the .conf's to C:\Program Files\ClamAV
+Open a command prompt.
+Change directory to C:\Program Files\ClamAV
+Run clamd.exe --install
+Open services.msc and edit the newly installed "ClamWin Free Antivirus Scanner Service" to start Automatically and/or use credentials other than the local system account, etc.
 
 ---
 ## Steps for building the service
-1. From the root repo directory run create_windows_service_installer.bat
+1. Ensure your environment is clean by running cleanup_environment.bat
+2. From the root repo directory run build.bat
 
 
 ## Steps for installing the service
-1. Move dist/clamdapiserver.exe and dist/clamav_webapi_windows_service to C:\Program Files\ClamAV
+0. Ensure your environment is clean by running cleanup_environment.bat
+1. Move dist/clamdapiserver.exe and dist/clamav_webapi_windows_service.exe to C:\Program Files\ClamAV
 2. Open elevated command prompt (i.e. as Admin)
-3. cd to C:\Program Files\ClamAV
-4. `call clamav_webapi_windows_service.exe --startup auto install`
-5. `call clamav_webapi_windows_service.exe start`
+3. in root of repo run install_windows_service.bat
 
 The service will be installed on your system in auto run mode.
 
